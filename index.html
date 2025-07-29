@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cross-Platform Analytics Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .diagram-container {
+            padding: 40px;
+            position: relative;
+            min-height: 800px;
+        }
+        
+        .data-sources {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+        
+        .source-category {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .source-category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .membership { border-left-color: #e74c3c; }
+        .content { border-left-color: #f39c12; }
+        .web { border-left-color: #27ae60; }
+        .sponsorship { border-left-color: #9b59b6; }
+        
+        .category-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .source-item {
+            background: white;
+            padding: 12px 15px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border-left: 3px solid #3498db;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+        
+        .source-item:hover {
+            background: #ecf0f1;
+            border-left-color: #e74c3c;
+        }
+        
+        .priority-high { border-left-color: #e74c3c; }
+        .priority-medium { border-left-color: #f39c12; }
+        .priority-low { border-left-color: #95a5a6; }
+        
+        .integration-hub {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .integration-hub::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .hub-title {
+            font-size: 2.2em;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hub-subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .outcomes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .outcome-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .outcome-card:nth-child(even) {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .outcome-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .outcome-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .outcome-card:hover::before {
+            left: 100%;
+        }
+        
+        .outcome-title {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .outcome-description {
+            font-size: 1em;
+            line-height: 1.6;
+        }
+        
+        .flow-arrows {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .arrow {
+            position: absolute;
+            font-size: 2em;
+            color: #3498db;
+            opacity: 0.3;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .success-metrics {
+            background: #2c3e50;
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin-top: 40px;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+        
+        .metric-item {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: background 0.3s ease;
+        }
+        
+        .metric-item:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .metric-title {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            color: #3498db;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 4px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Cross-Platform Analytics Strategy</h1>
+            <p>Unified cross-platform data warehouse combining listener IDs, engagement metrics, membership status, and behavioral patterns</p>
+        </div>
+        
+        <div class="diagram-container">
+            <div class="flow-arrows">
+                <div class="arrow" style="top: 20%; left: 25%;">↓</div>
+                <div class="arrow" style="top: 20%; left: 75%;">↓</div>
+                <div class="arrow" style="top: 45%; left: 50%;">→</div>
+            </div>
+            
+            <!-- Data Sources -->
+            <div class="data-sources">
+                <div class="source-category membership">
+                    <div class="category-title">Member & Donor Data</div>
+                    <div class="source-item priority-high">SalesForce (CRM)</div>
+                    <div class="source-item priority-medium">SupportingCast (Membership)</div>
+                    <div class="source-item priority-high">Donor Demographics</div>
+                </div>
+                
+                <div class="source-category content">
+                    <div class="category-title">Listening Metrics</div>
+                    <div class="source-item priority-high">Simplecast (Podcasts)</div>
+                    <div class="source-item priority-medium">Apple Podcasts</div>
+                    <div class="source-item priority-medium">Spotify</div>
+                    <div class="source-item priority-low">Podtrac</div>
+                    <div class="source-item priority-low">Triton (Livestream)</div>
+                    <div class="source-item priority-high">YouTube Analytics</div>
+                    <div class="source-item priority-low">NPR Looker</div>
+                    <div class="source-item priority-low">Amazon RSK</div>
+                    <div class="source-item priority-high">Nielsen Data</div>
+                    <div class="source-item priority-high">AudioServe Livestream</div>
+                </div>
+                
+                <div class="source-category web">
+                    <div class="category-title">Web & Login Data</div>
+                    <div class="source-item priority-high">GA4 (Web Analytics)</div>
+                    <div class="source-item priority-high">O&O Player Analytics</div>
+                    <div class="source-item priority-medium">Email/Listener ID Login Data</div>
+                </div>
+                
+                <div class="source-category sponsorship">
+                    <div class="category-title">Revenue & Sponsorship</div>
+                    <div class="source-item priority-high">AudioServe/AudioMax</div>
+                    
+                </div>
+            </div>
+            
+            <!-- Integration Hub -->
+            <div class="integration-hub">
+                <div class="hub-title">Audience Intelligence Hub</div>
+                <div class="hub-subtitle">Unified cross-platform data warehouse combining listener IDs, engagement metrics, membership status, and behavioral patterns</div>
+            </div>
+            
+            <!-- Outcomes -->
+            <div class="outcomes">
+                <div class="outcome-card">
+                    <div class="outcome-title">Targeted Messaging</div>
+                    <div class="outcome-description">Personalized content and ads based on listening history, membership status, and engagement patterns. Special messaging for members, donors, and high-value listeners.</div>
+                </div>
+                
+                <div class="outcome-card">
+                    <div class="outcome-title">Cross-Platform Journey</div>
+                    <div class="outcome-description">Complete audience mapping from first website visit through podcast listening, livestream engagement, to membership conversion and donation.</div>
+                </div>
+                
+                <div class="outcome-card">
+                    <div class="outcome-title">Predictive Analytics</div>
+                    <div class="outcome-description">Forecast listener churn, optimize fundraising campaigns, and predict content performance using unified behavioral data.</div>
+                </div>
+                
+                <div class="outcome-card">
+                    <div class="outcome-title">Content Optimization</div>
+                    <div class="outcome-description">Data-driven content strategy with platform-specific insights, mid-roll ad optimization, and audience segment analysis.</div>
+                </div>
+            </div>
+            
+            <!-- Success Metrics -->
+            <div class="success-metrics">
+                <h2 style="text-align: center; margin-bottom: 15px;">Success Metrics</h2>
+                <div class="metrics-grid">
+                    <div class="metric-item">
+                        <div class="metric-title">Unified Profiles</div>
+                        <div>Single view of listeners across all platforms</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-title">Conversion Tracking</div>
+                        <div>From first listen to membership/donation</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-title">Engagement Scoring</div>
+                        <div>Loyalty metrics across content types</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-title">Revenue Attribution</div>
+                        <div>Connect content to sponsorship value</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-title">Churn Prevention</div>
+                        <div>Predictive models for member retention</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-title">Ad Optimization</div>
+                        <div>Targeted campaigns with higher ROI</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Legend -->
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #e74c3c;"></div>
+                    <span>High Priority Integration</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #f39c12;"></div>
+                    <span>Medium Priority</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #95a5a6;"></div>
+                    <span>Low Priority/Backlog</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Add some interactive animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.outcome-card');
+            const sourceItems = document.querySelectorAll('.source-item');
+            
+            // Stagger animation for outcome cards
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.2}s`;
+            });
+            
+            // Add click interactions
+            sourceItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 150);
+                });
+            });
+            
+            // Add floating animation to arrows with different delays
+            const arrows = document.querySelectorAll('.arrow');
+            arrows.forEach((arrow, index) => {
+                arrow.style.animationDelay = `${index * 0.5}s`;
+            });
+        });
+    </script>
+</body>
+</html>
